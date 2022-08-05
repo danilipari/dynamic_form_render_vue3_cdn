@@ -26,21 +26,25 @@
         template: `
           <div class="container-fluid px-0">
             <div class="p-4">
-              <p>dentro all app {{ var_test }}</p>
 
 
 
-              <form class="form-group">
-                <div class="mt-2" v-for="(element, index) in items" :key="index">
-                  <p>{{ element }}</p>
-                  <hr>
+              <form :name="name_form" class="form-group" v-if="loaded && forms.length > 0">
+                <div class="mt-2" v-for="(element, index) in forms" :key="index">
+                  <!-- <p>{{ element }}</p>
+                  <hr> -->
                   <div class="d-flex justify-content-between">
-                    <label>{{ element.label }}</label>
+                    <label>{{ element.label }} - {{ element.value }}</label>
                     <p class="mb-0 text-muted">{{ element.description }}</p>
                   </div>
-                  <input class="form-control form-control-lg" autocomplete="off" :name="element.name" :id="element.name" :type="element.inputType" :placeholder="element.placeholder" :disabled="!element.enabled">
+                  <input class="form-control form-control-lg" autocomplete="off" :name="element.name" :id="element.name" :type="element.inputType" :placeholder="element.placeholder" :disabled="!element.enabled" v-model="element.value">
+                  <small class="text-danger" v-if="requiredCheck(element)">Required</small>
                 </div>
               </form>
+
+              <div class="mt-5">
+                <button v-for="(element, indexB) in actions" :key="indexB" type="button" class="btn btn-primary" @click="action(indexB, element.href)">Button 1</button>
+              </div>
 
 
 
@@ -49,206 +53,254 @@
         `,
         data() {
           return {
-            var_test: "variable test",
+            form_load: false,
             error: null,
-            items: [
+            name_form: null,
+            forms: [],
+            actions: [],
+            forms_base: [
               {
-                index: 0,
-                inputType: 'text',
-                component: '',
-                enabled: true,
-                name: 'text-0',
-                label: 'text',
-                error: '',
-                description: 'description',
-                placeholder: 'Insert your text',
-                options: [],
-                required: false,
-                validation: '/.*/'
+                "index":0,
+                "inputType":"text",
+                "component":"",
+                "enabled":true,
+                "name":"text-0",
+                "label":"text",
+                "error":"",
+                "description":"description",
+                "placeholder":"Insert your text",
+                "options":[],
+                "required":false,
+                "validation":"/.*/",
+                "value": "",
+                "href":""
               },
               {
-                index: 1,
-                inputType: 'email',
-                component: '',
-                enabled: true,
-                name: 'email-1',
-                label: 'email',
-                error: '',
-                description: 'description',
-                placeholder: 'Insert your email',
-                options: [],
-                required: false,
-                validation: '/.*/'
+                "index":1,
+                "inputType":"email",
+                "component":"",
+                "enabled":true,
+                "name":"email-1",
+                "label":"email",
+                "error":"",
+                "description":"description",
+                "placeholder":"Insert your email",
+                "options":[],
+                "required":false,
+                "validation":"/.*/",
+                "value": "",
+                "href":""
               },
               {
-                index: 2,
-                inputType: 'password',
-                component: '',
-                enabled: true,
-                name: 'password-2',
-                label: 'password',
-                error: '',
-                description: 'description',
-                placeholder: 'Insert your password',
-                options: [],
-                required: false,
-                validation: '/.*/'
+                "index":2,
+                "inputType":"password",
+                "component":"",
+                "enabled":true,
+                "name":"password-2",
+                "label":"password",
+                "error":"",
+                "description":"description",
+                "placeholder":"Insert your password",
+                "options":[],
+                "required":false,
+                "validation":"/.*/",
+                "value": "",
+                "href":""
               },
               {
-                index: 3,
-                inputType: 'date',
-                component: '',
-                enabled: true,
-                name: 'date-3',
-                label: 'date',
-                error: '',
-                description: 'description',
-                placeholder: 'Insert your date',
-                options: [],
-                required: false,
-                validation: '/.*/'
+                "index":3,
+                "inputType":"date",
+                "component":"",
+                "enabled":true,
+                "name":"date-3",
+                "label":"date",
+                "error":"",
+                "description":"description",
+                "placeholder":"Insert your date",
+                "options":[],
+                "required":false,
+                "validation":"/.*/",
+                "value": "",
+                "href":""
               },
               {
-                index: 4,
-                inputType: 'datetime-local',
-                component: '',
-                enabled: true,
-                name: 'datetime-local-4',
-                label: 'datetime-local',
-                error: '',
-                description: 'description',
-                placeholder: 'Insert your datetime-local',
-                options: [],
-                required: false,
-                validation: '/.*/'
+                "index":4,
+                "inputType":"datetime-local",
+                "component":"",
+                "enabled":true,
+                "name":"datetime-local-4",
+                "label":"datetime-local",
+                "error":"",
+                "description":"description",
+                "placeholder":"Insert your datetime-local",
+                "options":[],
+                "required":false,
+                "validation":"/.*/",
+                "value": "",
+                "href":""
               },
               {
-                index: 5,
-                inputType: 'number',
-                component: '',
-                enabled: true,
-                name: 'number-5',
-                label: 'number',
-                error: '',
-                description: 'description',
-                placeholder: 'Insert your number',
-                options: [],
-                required: false,
-                validation: '/.*/'
+                "index":5,
+                "inputType":"number",
+                "component":"",
+                "enabled":true,
+                "name":"number-5",
+                "label":"number",
+                "error":"",
+                "description":"description",
+                "placeholder":"Insert your number",
+                "options":[],
+                "required":false,
+                "validation":"/.*/",
+                "value": "",
+                "href":""
               },
               {
-                index: 6,
-                inputType: 'checkbox',
-                component: '',
-                enabled: true,
-                name: 'checkbox-6',
-                label: 'checkbox',
-                error: '',
-                description: 'description',
-                placeholder: 'Insert your checkbox',
-                options: [],
-                required: false,
-                validation: '/.*/'
+                "index":6,
+                "inputType":"checkbox",
+                "component":"",
+                "enabled":true,
+                "name":"checkbox-6",
+                "label":"checkbox",
+                "error":"",
+                "description":"description",
+                "placeholder":"Insert your checkbox",
+                "options":[],
+                "required":false,
+                "validation":"/.*/",
+                "value": "",
+                "href":""
               },
               {
-                index: 7,
-                inputType: 'radio',
-                component: '',
-                enabled: true,
-                name: 'radio-7',
-                label: 'radio',
-                error: '',
-                description: 'description',
-                placeholder: 'Insert your radio',
-                options: [],
-                required: false,
-                validation: '/.*/'
+                "index":7,
+                "inputType":"radio",
+                "component":"",
+                "enabled":true,
+                "name":"radio-7",
+                "label":"radio",
+                "error":"",
+                "description":"description",
+                "placeholder":"Insert your radio",
+                "options":[],
+                "required":false,
+                "validation":"/.*/",
+                "value": "",
+                "href":""
               },
               {
-                index: 8,
-                inputType: 'range',
-                component: '',
-                enabled: true,
-                name: 'range-8',
-                label: 'range',
-                error: '',
-                description: 'description',
-                placeholder: 'Insert your range',
-                options: [],
-                required: false,
-                validation: '/.*/'
+                "index":8,
+                "inputType":"range",
+                "component":"",
+                "enabled":true,
+                "name":"range-8",
+                "label":"range",
+                "error":"",
+                "description":"description",
+                "placeholder":"Insert your range",
+                "options":[],
+                "required":false,
+                "validation":"/.*/",
+                "value": "",
+                "href":""
               },
               {
-                index: 9,
-                inputType: 'tel',
-                component: '',
-                enabled: true,
-                name: 'tel-9',
-                label: 'tel',
-                error: '',
-                description: 'description',
-                placeholder: 'Insert your tel',
-                options: [],
-                required: false,
-                validation: '/.*/'
+                "index":9,
+                "inputType":"tel",
+                "component":"",
+                "enabled":true,
+                "name":"tel-9",
+                "label":"tel",
+                "error":"",
+                "description":"description",
+                "placeholder":"Insert your tel",
+                "options":[],
+                "required":false,
+                "validation":"/.*/",
+                "value": "",
+                "href":""
               },
               {
-                index: 10,
-                inputType: 'time',
-                component: '',
-                enabled: true,
-                name: 'time-10',
-                label: 'time',
-                error: '',
-                description: 'description',
-                placeholder: 'Insert your time',
-                options: [],
-                required: false,
-                validation: '/.*/'
+                "index":10,
+                "inputType":"time",
+                "component":"",
+                "enabled":true,
+                "name":"time-10",
+                "label":"time",
+                "error":"",
+                "description":"description",
+                "placeholder":"Insert your time",
+                "options":[],
+                "required":false,
+                "validation":"/.*/",
+                "value": "",
+                "href":""
               },
               {
-                index: 11,
-                inputType: 'week',
-                component: '',
-                enabled: true,
-                name: 'week-11',
-                label: 'week',
-                error: '',
-                description: 'description',
-                placeholder: 'Insert your week',
-                options: [],
-                required: false,
-                validation: '/.*/'
+                "index":11,
+                "inputType":"week",
+                "component":"",
+                "enabled":true,
+                "name":"week-11",
+                "label":"week",
+                "error":"",
+                "description":"description",
+                "placeholder":"Insert your week",
+                "options":[],
+                "required":false,
+                "validation":"/.*/",
+                "value": "",
+                "href":""
               },
               {
-                index: 12,
-                inputType: 'month',
-                component: '',
-                enabled: true,
-                name: 'month-12',
-                label: 'month',
-                error: '',
-                description: 'description',
-                placeholder: 'Insert your month',
-                options: [],
-                required: false,
-                validation: '/.*/'
+                "index":12,
+                "inputType":"month",
+                "component":"",
+                "enabled":true,
+                "name":"month-12",
+                "label":"month",
+                "error":"",
+                "description":"description",
+                "placeholder":"Insert your month",
+                "options":[],
+                "required":false,
+                "validation":"/.*/",
+                "value": "",
+                "href":""
               }
             ],
           };
+        },
+        computed: {
+          loaded() {
+            return this.form_load;
+          },
+        },
+        methods: {
+          requiredCheck(element) {
+            const required = !!(element.required && element.value?.trim().length === 0);
+            return required;
+          },
+          action(index, href) {
+            alert(`action-${index}: ` + href);
+          },
         },
         created() {
           console.log('app created');
         },
         mounted() {
-          console.log('app mounted', this.var_test);
+          console.log('app mounted');
 
 
 
           if(true) {
             axios.get('https://m49w1.mocklab.io/form/1')
-            .then(response => (console.log(response.status, 'response GET here')))
-            .catch(error => (this.error = error));
+            .then(response => {
+              console.log(response, 'response GET here')
+              this.form_load = true;
+              this.forms = response.data.form;
+              this.name_form = response.data.name_form;
+              this.actions = response.data.actions;
+            }).catch(error => (this.error = error));
           }
 
           if(false) {
@@ -267,7 +319,6 @@
         },
       });
       app.mount("#app");
-      console.log('log interno');
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
