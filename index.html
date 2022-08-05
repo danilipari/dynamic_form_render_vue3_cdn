@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@next"></script>
+    <title>Vue3 Form</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      const app = Vue.createApp({
+        template: "<p>dentro all app {{ var_test }}</p>",
+        data() {
+          return {
+            var_test: 'diocane',
+          };
+        },
+        created() {
+          console.log('app created');
+        },
+        mounted() {
+          console.log('app mounted', this.var_test);
+        },
+      });
+      app.mount("#app");
+      console.log('log interno');
+    </script>
+  </body>
+</html>
