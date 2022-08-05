@@ -25,38 +25,26 @@
       const app = Vue.createApp({
         template: `
           <div class="container-fluid px-0">
-
             <div class="p-4">
-
-
               <p>dentro all app {{ var_test }}</p>
 
-              <!-- <div class="list-group">
-                <div
-                  v-for="(item, index) in items"
-                  :key="index"
-                  class="list-group-item shadow-sm"
-                >
-                  <p class="mb-0">{{ item }}</p>
-                </div>
-              </div> -->
 
 
               <form class="form-group">
                 <div class="mt-2" v-for="(element, index) in items" :key="index">
+                  <p>{{ element }}</p>
+                  <hr>
                   <div class="d-flex justify-content-between">
                     <label>{{ element.label }}</label>
                     <p class="mb-0 text-muted">{{ element.description }}</p>
                   </div>
-                  <input class="form-control" autocomplete="'on'" :name="element.name" :id="element.name" :type="element.inputType" :placeholder="element.placeholder" :disabled="!element.enabled">
+                  <input class="form-control form-control-lg" autocomplete="off" :name="element.name" :id="element.name" :type="element.inputType" :placeholder="element.placeholder" :disabled="!element.enabled">
                 </div>
               </form>
 
 
 
             </div>
-
-
           </div>
         `,
         data() {
@@ -282,9 +270,7 @@
       console.log('log interno');
     </script>
 
-    <!-- Optional JavaScript; choose one of the two! -->
-
-    <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
   </body>
 </html>
