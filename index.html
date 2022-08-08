@@ -71,27 +71,70 @@
           };
         },
         computed: {
+          /**
+           * @author Dani Lipari
+           * @description Check if apis in created() are available
+           */
           loaded() {
             return this.form_load;
           },
         },
         methods: {
+          /**
+           * @author Dani Lipari
+           * @description Check if value is required and if it is empty
+           * @param {Object} element - form element
+           * @returns {Boolean} - true if required and empty, false otherwise
+           */
           requiredCheck(element) {
             return !!(element.required && element.value.length === 0);
           },
+          /**
+           * @author Dani Lipari
+           * @description Function responsible for redirecting to the specified url or some action
+           * @param {Number} index - index of form element
+           * @param {String} href - href to redirect
+           * @returns {none} - without return
+           */
           action(index, href) {
             console.log(`action-${index}: ` + href);
           },
+          /**
+           * @author Dani Lipari
+           * @description Same method as "cloneStructure()" in ES6, but without the need of a dependency
+           * @param {any} element - elemento to 'clean'
+           * @returns {any} - returns new array cleaned
+           */
           cleanProxy(element) {
             return JSON.parse(JSON.stringify(element));
           },
+          /**
+           * @author Dani Lipari
+           * @description Convert string into pattern valid as Regex pattern
+           * @param {String} s - String regex to convert
+           * @param {String} g - value
+           * @returns {Boolean} - true if valid, false otherwise
+           */
           stringToRegex(s, m = 'g') {
             return (m = s.match(/^([\/~@;%#'])(.*?)\1([gimsuy]*)$/)) ? new RegExp(m[2], m[3].split('').filter((i, p, s) => s.indexOf(i) === p).join('')) : new RegExp(s);
           },
+          /**
+           * @author Dani Lipari
+           * @description On click set that form field is touched
+           * @param {Number} index - regex to match
+           * @returns {none} - without return
+           */
           setTouched(index) {
             if (!Object.keys(this.forms[index]).includes('touched') && this.forms[index])
               this.forms[index].touched = true;
           },
+          /**
+           * @author Dani Lipari
+           * @description Check if value is valid with regex
+           * @param {String} regex - regex to check
+           * @param {String} value - value to check
+           * @returns {Boolean} - true if valid, false otherwise
+           */
           checkRegex(regex, value) {
             if (value?.length !== 0) {
               return new RegExp(this.stringToRegex(regex)).test(value);
@@ -99,8 +142,14 @@
               return false;
             }
           },
-          checkValidityForm() {
-            const control = this.cleanProxy(this.forms).reduce((acc, item, index) => {
+          /**
+           * @author Dani Lipari
+           * @description Check if all form fields are valid
+           * @param {Array} form - form to check
+           * @returns {Boolean} - true if all valid, false otherwise
+           */
+          checkValidityForm(form = this.cleanProxy(this.forms)) {
+            const control = form.reduce((acc, item, index) => {
               let counter = 0;
               if (item.validation !== '') {
                 if (!this.checkRegex(item.validation, item.value)) {
@@ -118,10 +167,10 @@
             }, []).every(field => field === 0);
 
             if (control === false) {
-              this.cleanProxy(this.forms).map((upItem, index) => (this.setTouched(index)));
+              form.map((upItem, index) => (this.setTouched(index)));
             }
 
-            console.log('checkValidityForm', control, this.cleanProxy(this.forms));
+            console.log('checkValidityForm', control, form);
 
             this.checkFormFields = !control;
             return control;
