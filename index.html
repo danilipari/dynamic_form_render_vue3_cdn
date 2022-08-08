@@ -8,18 +8,16 @@
     <script src="https://unpkg.com/vue@next"></script>
     <script src="https://unpkg.com/http-vue-loader"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <!--  For Vue 3 -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
-    <!--  Vuelidate -->
-    <script src="https://cdn.jsdelivr.net/npm/vue-demi"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@vuelidate/core"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@vuelidate/validators"></script>
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <title>Vue3 Form</title>
   </head>
   <body>
+    <style>
+      /*  */
+    </style>
     <div id="app"></div>
     <script>
       const app = Vue.createApp({
@@ -34,11 +32,15 @@
                   <!-- <p>{{ element }}</p>
                   <hr> -->
                   <div class="d-flex justify-content-between">
-                    <label>{{ element.label }} - {{ element.value }}</label>
+                    <label>{{ element.label }} {{ element.required ? '*' : '' }} </label>
+                    <small>{{ element.value }}</small>
                     <p class="mb-0 text-muted">{{ element.description }}</p>
                   </div>
-                  <input class="form-control form-control-lg" autocomplete="off" :name="element.name" :id="element.name" :type="element.inputType" :placeholder="element.placeholder" :disabled="!element.enabled" v-model="element.value">
-                  <small class="text-danger" v-if="requiredCheck(element)">Required</small>
+                  <input class=" form-control form-control-lg " :class="{ 'border border-danger': requiredCheck(element) }" autocomplete="off" :name="element.name" :id="element.name" :type="element.inputType" :placeholder="element.placeholder" :disabled="!element.enabled" v-model="element.value">
+                  <div class="d-flex flex-column w-75 border border-danger mt-2">
+                    <small class="text-danger" v-if="requiredCheck(element)">&#9679; Required</small>
+                    <small class="text-danger" v-if="!checkRegex(element.validation, element.value) && (element.validation !== '')">&#9679; Regex -  {{ element.validation !== "" ? element.validation : 'no-regex' }} </small>
+                  </div>
                 </div>
               </form>
 
@@ -277,12 +279,23 @@
         },
         methods: {
           requiredCheck(element) {
-            const required = !!(element.required && element.value?.trim().length === 0);
-            return required;
+            return !!(element.required && element.value?.trim().length === 0);
           },
           action(index, href) {
             console.log(`action-${index}: ` + href);
           },
+          stringToRegex(s, m = 'g') {
+            return (m = s.match(/^([\/~@;%#'])(.*?)\1([gimsuy]*)$/)) ? new RegExp(m[2], m[3].split('').filter((i, p, s) => s.indexOf(i) === p).join('')) : new RegExp(s);
+          },
+          checkRegex(regex, value) {
+            if (value?.length !== 0) {
+              console.log('checkRegex 1');
+              return new RegExp(this.stringToRegex(regex)).test(value);
+            } else {
+              console.log('checkRegex 2');
+              return false;
+            }
+          }
         },
         created() {
           console.log('app created');
@@ -293,7 +306,7 @@
 
 
           if(true) {
-            axios.get('https://m49w1.mocklab.io/form/1')
+            axios.get('https://formvue.mocklab.io/form/1')
             .then(response => {
               console.log(response, 'response GET here')
               this.form_load = true;
@@ -304,7 +317,7 @@
           }
 
           if(false) {
-            axios.post('https://m49w1.mocklab.io/json/form', {
+            axios.post('https://formvue.mocklab.io/json/form', {
               first_name: 'Dani',
               last_name: 'Lipari',
               email: '',
