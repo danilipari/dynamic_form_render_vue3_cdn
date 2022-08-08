@@ -55,7 +55,7 @@
 
               <div class="mt-5">
                 <button v-for="(element, indexB) in actions" :key="indexB" type="button" class="btn btn-primary mx-2" @click="action(indexB, element.href)">Button 1</button>
-                <button type="button" class="btn btn-success" @click="chekValidityForm()">chekValidityForm</button>
+                <button type="button" class="btn btn-success" @click="checkValidityForm()">chekValidityForm</button>
               </div>
 
 
@@ -104,14 +104,20 @@
               return false;
             }
           },
-          chekValidityForm() {
+          checkValidityForm() {
             const data = this.cleanProxy(this.forms);
             console.log(
               '-----------',
-              'chekValidityForm',
+              'checkValidityForm',
               data,
               data.reduce((acc, item) => {
-                console.log('req: ' + item.required, 'val: ' + (item.value ? item.value : null), 'validation: ' + (item.validation ? item.validation : null), item);
+                console.log(
+                  'req: ' + item.required,
+                  'val: ' + (item.value ? item.value : null),
+                  'validation: ' + (item.validation ? item.validation : null),
+                  item,
+                );
+
                 return acc;
               }, []),
             );
