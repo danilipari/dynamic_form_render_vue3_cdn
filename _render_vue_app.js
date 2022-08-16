@@ -9,16 +9,20 @@ const app = Vue.createApp({
           <div class="mt-2" v-for="(element, index) in forms" :key="index">
             <!-- <p>{{ element }}</p>
             <hr> -->
-            <div class="d-flex justify-content-between">
-              <label>{{ element.label }} {{ element.required ? '*' : '' }} </label>
-              <small>{{ element.value }}</small>
-              <p class="mb-0 text-muted">{{ element.description }}</p>
+
+            <div v-if="element.visible">
+              <div class="d-flex justify-content-between">
+                <label>{{ element.label }} {{ element.required ? '*' : '' }} </label>
+                <small>{{ element.value }}</small>
+                <p class="mb-0 text-muted">{{ element.description }}</p>
+              </div>
+              <input @click="setTouched(index)" class=" form-control form-control-lg " :class="{ 'border border-danger': requiredCheck(element) }" autocomplete="off" :name="element.name" :id="element.name" :type="element.inputType" :placeholder="element.placeholder" :disabled="!element.enabled" v-model="element.value">
+              <div class="d-flex flex-column w-75 border border-danger mt-2 p-2 rounded" v-if="element.touched && (requiredCheck(element) || (!checkRegex(element.validation, element.value) && (element.validation !== '')))">
+                <small class="text-danger" v-if="requiredCheck(element)">&#9679; Required</small>
+                <small class="text-danger" v-if="!checkRegex(element.validation, element.value) && (element.validation !== '')">&#9679; Regex -  {{ element.validation !== "" ? element.validation : 'no-regex' }} </small>
+              </div>
             </div>
-            <input @click="setTouched(index)" class=" form-control form-control-lg " :class="{ 'border border-danger': requiredCheck(element) }" autocomplete="off" :name="element.name" :id="element.name" :type="element.inputType" :placeholder="element.placeholder" :disabled="!element.enabled" v-model="element.value">
-            <div class="d-flex flex-column w-75 border border-danger mt-2 p-2 rounded" v-if="element.touched && (requiredCheck(element) || (!checkRegex(element.validation, element.value) && (element.validation !== '')))">
-              <small class="text-danger" v-if="requiredCheck(element)">&#9679; Required</small>
-              <small class="text-danger" v-if="!checkRegex(element.validation, element.value) && (element.validation !== '')">&#9679; Regex -  {{ element.validation !== "" ? element.validation : 'no-regex' }} </small>
-            </div>
+
           </div>
         </form>
 
