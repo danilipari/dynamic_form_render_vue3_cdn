@@ -159,6 +159,13 @@ const app = Vue.createApp({
       return control;
     },
   },
+  beforeCreate() {
+    console.debug('app beforeCreate');
+    console.log(
+      document.getElementById('render-vue-app').getAttribute('data') === 'enabled' ? 'enabled' : 'unenabled',
+      'RENDER'
+    );
+  },
   created() {
     console.debug('app created');
   },
@@ -166,10 +173,10 @@ const app = Vue.createApp({
     console.debug('app mounted');
 
     if(true) {
-      axios.get('https://formvue.mocklab.io/form/1')
+      axios.get('https://formvue.mocklab.io/form/0')
       .then(response => {
         this.form_load = true;
-        this.forms = response.data.form;
+        this.forms = response.data.forms;
         this.name_form = response.data.name_form;
         this.actions = response.data.actions;
       }).catch(error => (this.error = error));
