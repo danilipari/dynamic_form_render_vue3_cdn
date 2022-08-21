@@ -153,7 +153,7 @@ const app = Vue.createApp({
         form.map((upItem, index) => (this.setTouched(index)));
       }
 
-      console.log('checkValidityForm', control, form);
+      console.debug('checkValidityForm', control, form);
 
       this.checkFormFields = !control;
       return control;
